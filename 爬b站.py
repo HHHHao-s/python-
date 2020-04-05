@@ -2,12 +2,12 @@ import requests
 import os
 import re
 from lxml import html
+import easygui as e
 from multiprocessing.dummy import Pool
 headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'
     ,'Referer': 'https://space.bilibili.com/327621460/album'
 }
-os.chdir('b站涩图')
 def getpicurl(user_id):
     page_number = -1
     pic_url = []
@@ -30,8 +30,8 @@ def download(picurl):
         f.write(pic.content)
         print('downloading... %s' % pic_name)
 
-def getzlurl(search,page):
-    for n in range(1,page+1):
+def getzlurl(search,page1,page2):
+    for n in range(page1,page2+1):
         url = 'https://search.bilibili.com/article?keyword=' + search + '&page=' +str(n)
         response = requests.get(url,headers = headers)
         url_dict = {}
@@ -56,9 +56,9 @@ def getzlpicurl(url):
 
 
 def main(choose):
-    if choose == '1':#用户爬取相簿
+    if choose == '1.爬取相簿':#用户爬取相簿
         user_id = input('请输入需要爬取的用户:')
-        os.chdir('b站涩图')
+        os.chdir(e.diropenbox('选择存放地址'))
         n = 0
         pool = Pool()
         for picurls,name in getpicurl(user_id):
@@ -68,21 +68,27 @@ def main(choose):
                     os.mkdir(name)
                     os.chdir(name)
                 except OSError:
-                    os.chdir('垃圾标题淦')
+                    if not os.path.exists('错误标题'):
+                        os.mkdir('错误标题')
+                    os.chdir('错误标题')
             pool.map(download,picurls)
             os.chdir('..')
         pool.close()
         pool.join()
-    if choose == '2':#专栏爬取
-        search = input('请输入要搜索的内容')
-        page = input('请输入页数')
-        url_dict = getzlurl(search,int(page))
+    if choose == '2.爬取专栏':#专栏爬取
+        search = e.enterbox('请输入要搜索的内容')
+        page = e.multenterbox('请输入页数范围',fields = ['开始','结束'])
+        url_dict = getzlurl(search,int(page[0]),int(page[1]))
         pool = Pool()
+        os.chdir(e.diropenbox('请选择存放地址'))
         for name,url in url_dict.items():
             try:
                 os.mkdir(name)
-            except OSError or FileNotFoundError:
-                name = '垃圾标题淦'
+            except BaseException as reason:
+                print(reason)
+                if not os.path.exists('错误标题'):
+                    os.mkdir('错误标题')
+                name = '错误标题'
             os.chdir(name)
             picurls = getzlpicurl(url)
             pool.map(download,picurls)
@@ -90,5 +96,11 @@ def main(choose):
         pool.close()
         pool.join()
 
-choose = input('请输入功能(1.爬取相簿,2.爬取专栏):')
-main(choose)
+if __name__ == '__main__':
+    while True:
+        choose = e.buttonbox('请选择功能',choices=['1.爬取相簿','2.爬取专栏'])
+        if choose != None:
+            main(choose)
+            e.msgbox('下载完成')
+        else:
+            pass
