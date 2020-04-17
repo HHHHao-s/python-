@@ -1,6 +1,7 @@
 import requests
 import os
 import re
+import sys
 from lxml import html
 import easygui as e
 from multiprocessing.dummy import Pool
@@ -77,7 +78,7 @@ def main(choose):
         pool.join()
     if choose == '2.爬取专栏':#专栏爬取
         search = e.enterbox('请输入要搜索的内容')
-        page = e.multenterbox('请输入页数范围',fields = ['开始','结束'])
+        page = e.multenterbox('请输入页数范围如:',fields = ['开始','结束'])
         url_dict = getzlurl(search,int(page[0]),int(page[1]))
         pool = Pool()
         os.chdir(e.diropenbox('请选择存放地址'))
@@ -103,4 +104,4 @@ if __name__ == '__main__':
             main(choose)
             e.msgbox('下载完成')
         else:
-            pass
+            sys.exit()

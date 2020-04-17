@@ -103,7 +103,7 @@ def getmusic():
     choice=['1.获取歌单信息','2.获取个人信息','3.退出本系统']
     choose=e.buttonbox('请选择操作','网易云音乐系统',choice)
     if choose == choice[0]:
-        e.integerbox('请输入歌单的id','网易云音乐系统',upperbound=999999999)
+        list_id = e.integerbox('请输入歌单的id','网易云音乐系统',upperbound=999999999)
         try:
             play_list=cloudmusic.getPlaylist(list_id)
         except:
@@ -124,7 +124,7 @@ def getmusic():
         elif choose==choice1[1]:
             pass
     elif choose == choice[1]:
-        id=e.integerbox('请输入要查找的id','网易云音乐系统',upperbound=999999999)#515694669
+        id=e.integerbox('请输入要查找的id','网易云音乐系统','515694669',upperbound = 999999999)
         if id==None:
             getmusic()
         user=cloudmusic.getUser(id)
