@@ -14,15 +14,19 @@ headers = {
 
 def download(name, id, artist):
     if len(name) > 20:
-        name = name[:20]
+        name = name[:10]
     if len(artist) > 10:
         artist = artist.split('/')[0]
     path = os.getcwd() + '\\' + name + '-' + artist + '.mp3'
     url = 'http://music.163.com/song/media/outer/url?id=' + id + '.mp3'
-    with open(path, 'wb') as f:
-        print('downloading...', str(id))
-        html = requests.get(url, headers=headers)
-        f.write(html.content)
+    try:
+        with open(path, 'wb') as f:
+            print('downloading...', str(id))
+            html = requests.get(url, headers=headers)
+            f.write(html.content)
+    except:
+        print("错误名字" + artist)
+        download(name,id,artist[:2])
 
 
 def download1(other):
