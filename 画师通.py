@@ -24,11 +24,10 @@ def geturl(range_):
             break
 
 def download(picurl):
-        each=picurl.replace(picurl.split('_')[-1].split('.')[0],'wk1960x1080')
         time.sleep(1)
-        file_name=each.split('/')[-1]
+        file_name=picurl.split('/')[-1]
         try:
-                pic = requests.get(each,headers=headers,timeout = 5).content
+                pic = requests.get(picurl,headers=headers,timeout = 5).content
                 with open(file_name,'wb') as f:
                     f.write(pic)
                     print('downloading...%s\n' % file_name)
@@ -39,13 +38,16 @@ def download(picurl):
 def main():
     range_ = input('请输入下载范围(xxx-xxx):')
     os.chdir(os.getcwd())
-    os.mkdir('画师通')
+    try:
+        os.mkdir('画师通')
+    except:pass
     os.chdir('画师通')
+    pool = pl()
     for each,n in geturl(range_):
-        pool = pl()
+        each = list(map(lambda x:x.split('src="')[-1],each))
         pool.map(download,each)
-        pool.close()
-        pool.join()
+    pool.close()
+    pool.join()
     print('下载完成')
 
 if __name__ == '__main__':
