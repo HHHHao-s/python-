@@ -12,9 +12,10 @@ headers = {
     'Referer': 'https://music.163.com/'
 }
 
+
 def download(name, id, artist):
     if len(name) > 20:
-        name = name[:10]
+        name = name[:20]
     if len(artist) > 10:
         artist = artist.split('/')[0]
     path = os.getcwd() + '\\' + name + '-' + artist + '.mp3'
@@ -25,15 +26,14 @@ def download(name, id, artist):
             html = requests.get(url, headers=headers)
             f.write(html.content)
     except:
-        print("错误名字" + artist)
-        download(name,id,artist[:2])
+        pass
 
 
 def download1(other):
     download(other[0], other[1], other[2])
 
 
-def getlist(id, type=0):  # 0为获取歌手名,1为不获取(获取歌手名用时长)
+def getlist(id, type='1.添加'):  # 0为获取歌手名,1为不获取(获取歌手名用时长)
     print('processing...')
     response = requests.get(
         "https://music.163.com/playlist?id=" + id, headers=headers)
@@ -45,11 +45,11 @@ def getlist(id, type=0):  # 0为获取歌手名,1为不获取(获取歌手名用
     music_name = s.xpath('//ul[@class="f-hide"]/li/a/text()')
     music_artist = []
     for id in music_id:
-        if type == 0:
+        if type == '1.添加':
             artist = etree.HTML(requests.get('https://music.163.com/song?id=' + id,
                                              headers=headers).text).xpath('//*[@property="og:music:artist"]/@content')[0]
             music_artist.append(artist)
-        if type == 1:
+        if type == '0.不添加（速度较快）':
             music_artist.append('')
     play_list = [(x, music_id[music_name.index(x)],
                   music_artist[music_name.index(x)]) for x in music_name]
@@ -59,12 +59,17 @@ def getlist(id, type=0):  # 0为获取歌手名,1为不获取(获取歌手名用
 def main():
     id = e.enterbox('请输入歌单id:')
     pool = Pool()
-    play_list, list_name = getlist(id)
+    type = e.buttonbox("是否添加作者名:", "", ['0.不添加（速度较快）', '1.添加'])
+    play_list, list_name = getlist(id, type)
     print(play_list)
     path = e.diropenbox('请选择存放地址')
     os.chdir(path)
     if not os.path.exists(list_name):
-        os.mkdir(list_name)
+        try:
+            os.mkdir(list_name)
+        except:
+            list_name = e.enterbox("请自行输入文件名")
+            os.mkdir(list_name)
     os.chdir(list_name)
     pool.map(download1, play_list)
     pool.close()
