@@ -78,3 +78,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+'''
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple lxml
+安装库
+'''

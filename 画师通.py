@@ -25,13 +25,14 @@ def geturl(range_):
 def download(picurl):
     time.sleep(1)
     file_name = picurl.split('/')[-1]
-    try:
-        pic = requests.get(picurl, headers=headers, timeout=5).content
-        with open(file_name, 'wb') as f:
-            f.write(pic)
-            print('downloading...%s\n' % file_name)
-    except BaseException as reason:
-        print(reason)
+    if not os.path.exists(file_name):
+        try:
+            pic = requests.get(picurl, headers=headers, timeout=5).content
+            with open(file_name, 'wb') as f:
+                f.write(pic)
+                print('downloading...%s\n' % file_name)
+        except BaseException as reason:
+            print(reason)
 
 
 def main():
