@@ -18,7 +18,6 @@ class Solve:
         text = loads(get(url, headers=self.headers).text)  # 获取返回值
         ids = list(map(lambda x: str(x['id']), text['playlist']['trackIds']))
         list_name = text['playlist']['name']
-        print(ids)
         return ids, list_name
 
     def getdetail(self, song_id):  # 获取歌曲名以及作者
