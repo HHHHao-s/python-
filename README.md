@@ -6,7 +6,6 @@
 
 安装必要库
 ```
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U #升级  
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests  
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple lxml 
 ```
