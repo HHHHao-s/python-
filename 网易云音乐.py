@@ -179,7 +179,8 @@ def main(list_id, path):
             except:
                 list_name = '请自行修改文件夹名'
                 os.mkdir(list_name)
-        os.chdir(list_name)
+        os.startfile(list_name)
+        os.chdir(list_name) 
         pool.map(cool.getdetail, ids)
         pool.close()
         pool.join()
